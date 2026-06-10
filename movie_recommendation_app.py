@@ -25,12 +25,22 @@ class Exam(QWidget, form_window):
         for title in self.titles:
             self.cb_title.addItem(title)
 
+
+        model = QStringListModel()
+        model.setStringList((self.titles))
+        completer = QCompleter()
+        completer.setModel(model)
+        self.le_keyword.setCompleter(completer)
+
         self.cb_title.currentIndexChanged.connect(self.combobox_slot)
         self.btn_recommend.clicked.connect(self.btn_keywords_clicked)
 
     def btn_keywords_clicked(self):
         keyword = self.le_keyword.text()
-        recommendations = self.recommendation_by_keyword(keyword)
+        if keyword in self.titles:
+            recommendations = self.recommendation_by_title(keyword)
+        else:
+            recommendations = self.recommendation_by_keyword(keyword)
         self.lb_recommendation.setText(recommendations)
 
     def getRecommendation(self, cosine_sim):
